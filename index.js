@@ -1,14 +1,12 @@
 const MyKoa = require('./MyKoa')
 const MyRouter = require('./MyRouter')
-const {getPokemonStatus, pokemonMorningWake} = require('./router/pokemon')
-
-console.log(MyKoa)
+const {getPokemonStatusRouter, pokemonChangeSleepStatusRouter} = require('./router/pokemon')
 
 const app = MyKoa()
 const router = MyRouter()
 
-router.get('/getPokemonStatus', getPokemonStatus)
-router.post('/pokemonMorningWake', pokemonMorningWake)
+router.get('/getPokemonStatus', getPokemonStatusRouter)
+router.post('/pokemonChangeSleepStatus', pokemonChangeSleepStatusRouter)
 router.add404((ctx) => ctx.body = 404)
 
 app.use(router.routes())

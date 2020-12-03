@@ -1,24 +1,54 @@
+const { model } = require('../db')
+const { myMoment } = require('../util')
 
-const fs = require('fs');
+console.log('test')
+console.log(model)
 
-function getIcons(req, res) {
-    console.log('getIcons');
-    try {
-        run('touch iconConfig.txt')
-        return fs.readFileSync('./iconConfig.txt', 'utf8');
-    } catch (e) {
-        console.error(e)
+const pokemonSchema = {
+    name: '',
+    sleepRecord: [
+        // {
+        //     date: '',
+        //     wakeupTime: '',
+        //     sleepTime: '',
+        // }
+    ]
+}
+
+const PokemonModel = model('pokemon', pokemonSchema);
+console.log(PokemonModel)
+
+const getPokemonStatus = async () => {
+    const pokemonInfo = await PokemonModel.findOne({})
+    return pokemonInfo
+}
+
+const pokemonChangeSleepStatus = async (info) => {
+    const { sleepTime, wakeupTime } = info
+    const pokemonInfo = PokemonModel.findOne({})
+    if (pokemonInfo && pokemonInfo.sleepRecord) {
+        let lastRecord = pokemonInfo.sleepRecord[pokemonInfo.sleepRecord.length - 1]
+
+        if (lastRecord && lastRecord.date && myMoment.isSameDay(lastRecord.date)) {
+
+        } else {
+            // insert and init
+            lastRecord = {
+                date: Date.now(),
+            }
+            pokemonInfo.sleepRecord.push(lastRecord)
+        }
+
+        // 当日已有,就弱更新
+        lastRecord.sleepTime = lastRecord.sleepRecord || (sleepTime ? Date.now() : '')
+        lastRecord.wakeupTime = lastRecord.wakeupTime || (wakeupTime ? Date.now() : '')
+        return pokemonInfo.save()
+    } else {
+        console.error('pokemonChangeSleepStatus')
+        return
     }
 }
 
-function postIcons(req, res) {
-    console.log('postIcons');
-    const p = getJsonFromData(req).then((data) => {
-        let target
-        Object.keys(data).forEach((key) => {
-            target = key
-        })
-        return fs.writeFileSync('./iconConfig.txt', JSON.stringify(target), 'utf8');
-    })
-    return p
+module.exports = {
+    getPokemonStatus, pokemonChangeSleepStatus
 }

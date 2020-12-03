@@ -1,14 +1,21 @@
-const getPokemonStatus = (ctx, next) => {
+
+const {getPokemonStatus, pokemonChangeSleepStatus} =  require('../server')
+const {getJsonFromData} =  require('../util')
+
+const getPokemonStatusRouter = async (ctx, next) => {
     console.log('get getPokemonStatus')
-    ctx.body = 'getPokemonStatus'
+    const result = await getPokemonStatus()
+    ctx.body = JSON.stringify(result)
 }
 
-const pokemonMorningWake = (ctx, next) => {
-    console.log('post getPokemonStatus')
-    ctx.body = 'pokemonMorningWake'
+const pokemonChangeSleepStatusRouter = async (ctx, next) => {
+    console.log('post pokemonChangeSleepStatus')
+    const body = await getJsonFromData(ctx.request)
+    const result = await pokemonChangeSleepStatus(body)
+    ctx.body = JSON.stringify(result)
 }
 
 module.exports = {
-    getPokemonStatus,
-    pokemonMorningWake
+    getPokemonStatusRouter,
+    pokemonChangeSleepStatusRouter
 }

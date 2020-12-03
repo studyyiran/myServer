@@ -21,12 +21,14 @@ const MyKoa = () => {
             let current
             for (let i = 0; i < arr.length; i++) {
                 current = arr[i]
-                current(ctx)
+                await current(ctx)
             }
         }
-        run()
-        const result = { status: 'success', code: ctx.code, data: ctx.body }
-        response.end(JSON.stringify(result));
+        run().then(() => {
+            const result = { status: 'success', code: ctx.code, data: ctx.body }
+            response.end(JSON.stringify(result));
+        })
+        
     });
     httpServer.use = (func) => {
         arr.push(func)
