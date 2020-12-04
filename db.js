@@ -16,8 +16,8 @@ function connectDb() {
 }
 
 function saveIntoDb(obj) {
-    fs.writeFileSync(dbPath, JSON.stringify(obj), 'utf8');
-    return obj
+    const currentDb = connectDb()
+    fs.writeFileSync(dbPath, JSON.stringify({...currentDb, ...obj}), 'utf8');
 }
 
 const model = (key, schema) => {
@@ -27,7 +27,7 @@ const model = (key, schema) => {
 
     const db = getDate();
     if (!db || !db[key] && schema) {
-        saveIntoDb({...db, [key]: schema})
+        saveIntoDb({[key]: schema})
     }
 
     return {
@@ -36,7 +36,9 @@ const model = (key, schema) => {
             return {
                 ...db[key],
                 save: function () {
-                    return saveIntoDb({...db, [key]: this})
+                    const result = {[key]: this}
+                    saveIntoDb(result)
+                    return this
                 }
             }
         },

@@ -19,13 +19,11 @@ const PokemonModel = model('pokemon', pokemonSchema);
 console.log(PokemonModel)
 
 const getPokemonStatus = async () => {
-    const pokemonInfo = await PokemonModel.findOne({})
+    const pokemonInfo = await checkAndInsertLast(PokemonModel.findOne({}))
     return pokemonInfo
 }
 
-const pokemonChangeSleepStatus = async (info) => {
-    const { sleepTime, wakeupTime } = info
-    const pokemonInfo = PokemonModel.findOne({})
+const checkAndInsertLast = async (pokemonInfo) => {
     if (pokemonInfo && pokemonInfo.sleepRecord) {
         let lastRecord = pokemonInfo.sleepRecord[pokemonInfo.sleepRecord.length - 1]
 
@@ -38,7 +36,18 @@ const pokemonChangeSleepStatus = async (info) => {
             }
             pokemonInfo.sleepRecord.push(lastRecord)
         }
+        return pokemonInfo.save()
+    } else {
+        console.error('pokemonChangeSleepStatus')
+        return
+    }
+}
 
+const pokemonChangeSleepStatus = async (info) => {
+    const { sleepTime, wakeupTime } = info
+    const pokemonInfo = await checkAndInsertLast(PokemonModel.findOne({}))
+    if (pokemonInfo && pokemonInfo.sleepRecord) {
+        let lastRecord = pokemonInfo.sleepRecord[pokemonInfo.sleepRecord.length - 1]
         // 当日已有,就弱更新
         lastRecord.sleepTime = lastRecord.sleepRecord || (sleepTime ? Date.now() : '')
         lastRecord.wakeupTime = lastRecord.wakeupTime || (wakeupTime ? Date.now() : '')
