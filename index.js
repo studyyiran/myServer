@@ -20,7 +20,7 @@ router.add404((ctx) => ctx.body = 404)
 
 app.use(router.routes())
 
-const port = 5000
+const port = 4001
 app.listen(port, () => {
     console.log('start at port ' + port)
 })
