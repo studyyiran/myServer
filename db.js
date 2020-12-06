@@ -6,9 +6,10 @@ const dbPath = './dbStore.txt'
 
 function connectDb() {
     try {
+        // runCmd(`if [ ! -d "` + dbPath + `" ]; then \n echo hehe \n fi`)
         runCmd('touch ' + dbPath)
         const data = fs.readFileSync(dbPath, 'utf8');
-        const json = JSON.parse(data)
+        const json = data ? JSON.parse(data) : {}
         return json
     } catch (e) {
         console.error(e)

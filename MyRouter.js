@@ -6,8 +6,6 @@ const MyRouter = () => {
     // 这实际上是注册
     const addIntoRouterArr = (METHOD, path, func) => {
         routerArr.push((ctx) => {
-            console.log(METHOD)
-            console.log(path)
             if (METHOD === '404') {
                 return func(ctx)
             } else {

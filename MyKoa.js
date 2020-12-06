@@ -19,12 +19,9 @@ const MyKoa = () => {
         }
         // 依次执行。。。并且。。先绑定，先执行，先吐出来，给下一个。
         const run = async () => {
-            let p1 = Promise.resolve()
             for (let i = 0; i < middlewareArr.length; i++) {
                 if (!ctx.haveMatched) {
-                    console.log('start')
                     const p = await middlewareArr[i](ctx)
-                    console.log('end')
                 } else {
                     break
                 }
