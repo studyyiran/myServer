@@ -3,6 +3,7 @@ const http = require('http');
 const MyKoa = () => {
     let middlewareArr = []
     const httpServer = http.createServer(function (request, response) {
+        console.log('my koa get')
         console.log(request.url)
         // 1 匹配路由
         // 2 匹配出结果了
